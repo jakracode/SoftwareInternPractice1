@@ -16,26 +16,34 @@ function formData() {
   return data;
 }
 
-// Add Student
-function AddStudent() {
-  let No = document.querySelectorAll("tbody tr").length + 1;
-
-  // Duplicated
-  let newData = formData();
+// Validation
+function Validation(data, isEdit = false) {
+  // Duplicated Email and Phone
   let isDuplicated = dataRecorded.some(
-    (existedRecord) => existedRecord.Gmail === newData.Gmail || existedRecord.PhoneNumber === newData.PhoneNumber
+    (existedRecord) => {
+      if (
+        isEdit &&
+        currentRow &&
+        existedRecord.Gmail === currentRow.cells[5].innerHTML
+      ) {
+        return false;
+      } 
+      return (
+        existedRecord.Gmail === data.Gmail ||
+        existedRecord.PhoneNumber == data.PhoneNumber
+      );
+    },
   );
-  dataRecorded.push(newData);
-  if(isDuplicated){
-    alert("This Student is Already Existed!")
-    return;
+  if (isDuplicated) {
+    alert("This Email or Phone Number is Already Existed!");
+    return false;
   }
 
   // Validation
   let EmailPattern = /^[a-z0-9._%+-]+@gmail\.com$/;
   if (!EmailPattern.test(formData().Gmail)) {
     alert("Please Enter a Valid Email Address.");
-    return;
+    return false;
   }
 
   // Age Validation
@@ -46,21 +54,21 @@ function AddStudent() {
     formData().Age > 99
   ) {
     alert("Please enter a valid age (15-99).");
-    return;
+    return false;
   }
 
   // English Validation
   let EnglishPattern = /^[a-zA-Z\s]+$/;
   if (!EnglishPattern.test(formData().EnglishName)) {
     alert("Number Denied in Name field!");
-    return;
+    return false;
   }
 
   // Khmer Validation
   let KhmerPattern = /^[\u1780-\u17FF\s]+$/;
   if (!KhmerPattern.test(formData().KhmerName)) {
     alert("Invalid Khmer Script!");
-    return;
+    return false;
   }
 
   // Matching DOB and AGE
@@ -72,35 +80,46 @@ function AddStudent() {
   // Matching Age
   if (exactAge != parseInt(formData().Age)) {
     alert("Your date of birth didn't match you age!");
-    return;
+    return false;
   }
 
   // Phone Validation
   if (!formData().PhoneNumber.startsWith("0")) {
     alert("Phone number should start with 0.");
-    return;
+    return false;
   }
 
   let PhonePattern = /^\d{9,10}$/;
   if (!PhonePattern.test(formData().PhoneNumber)) {
     alert("Please enter a valid phone number (9-10 digits).");
-    return;
+    return false;
   }
 
+  return true;
+}
+
+// Add Student
+function AddStudent() {
+  let No = document.querySelectorAll("tbody tr").length + 1;
+  let newData = formData();
+  if (!Validation(newData, false)) {
+    return;
+  }
+  dataRecorded.push(newData);
 
   // Insert Data
   let row = `
     <tr>
         <td>${No}</td>
-        <td id = "khmerRow">${formData().KhmerName}</td>
-        <td>${formData().EnglishName}</td>
-        <td>${formData().Age}</td>
-        <td>${formData().Gender}</td>
-        <td>${formData().Gmail}</td>
-        <td>${formData().DateOfBirth}</td>
-        <td>${formData().PhoneNumber}</td>
-        <td>${formData().Province}</td>
-        <td>${formData().Nationality}</td>
+        <td id = "khmerRow">${newData.KhmerName}</td>
+        <td>${newData.EnglishName}</td>
+        <td>${newData.Age}</td>
+        <td>${newData.Gender}</td>
+        <td>${newData.Gmail}</td>
+        <td>${newData.DateOfBirth}</td>
+        <td>${newData.PhoneNumber}</td>
+        <td>${newData.Province}</td>
+        <td>${newData.Nationality}</td>
         <td>
             <button type="button" id="editBtn" onclick="ReturnData()">Edit</button>
             <button type="button" id="deleteBtn" onclick="DeleteStudent()">Delete</button>
@@ -143,6 +162,17 @@ function ReturnData() {
 function UpdateStudent() {
   if (currentRow) {
     let data = formData();
+
+    if (!Validation(data, true)) {
+      return;
+    }
+
+    let oldEmail = currentRow.cells[5].innerHTML;
+    let index = dataRecorded.findIndex((record) => record.Gmail === oldEmail);
+    if (index !== -1) {
+      dataRecorded[index] = data; // Replace old data with new data
+    }
+
     currentRow.cells[1].innerHTML = data.KhmerName;
     currentRow.cells[2].innerHTML = data.EnglishName;
     currentRow.cells[3].innerHTML = data.Age;
@@ -163,11 +193,20 @@ function UpdateStudent() {
   }
 }
 
+// Updated Row NO
+function UpdateIndexRow() {
+  const rows = document.querySelectorAll("tbody tr");
+  rows.forEach((row, index) => {
+    row.cells[0].innerText = index + 1;
+  });
+}
+
 // Delete Student
 function DeleteStudent() {
   currentRow = event.target.closest("tr");
   if (currentRow) {
     currentRow.remove();
+    UpdateIndexRow();
     document.querySelector("form").reset();
   }
 }
