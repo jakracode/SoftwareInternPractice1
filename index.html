@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="src/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bayon&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+        rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+</head>
+
+<body>
+
+    <form action="#">
+        <h1>Student Information</h1>
+        <div class="input">
+            <div class="input-group khmername">
+                <img src="assets/svg/pfp.svg" alt="profile">
+                <input type="text" id="khmerNameInput" placeholder="ឈ្មោះជាភាសាខ្មែរ​៖ ឧ. សម្បត្តិ">
+            </div>
+
+            <div class="input-group englishname">
+                <img src="assets/svg/pfp.svg" alt="profile">
+                <input type="text" id="englishNameInput" placeholder="English Name: eg. Bath">
+            </div>
+
+            <div class="input-group age">
+                <img src="assets/svg/age.svg" alt="profile">
+                <input type="number" id="ageInput" placeholder="Age: eg. 16">
+            </div>
+
+            <div class="input-group gender">
+                <label for="gender">Select your gender:</label>
+                <select title="gender" name="gender" id="genderInput">
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+            <div class="input-group email">
+                <img src="assets/svg/pfp.svg" alt="profile">
+                <input type="text" id="emailInput" placeholder="Email: eg. username@gmail.com" required="@gmail.com">
+            </div>
+
+            <div class="input-group dob">
+                <img src="assets/svg/calendar.svg" alt="calendar">
+                <input type="date" id="dobInput" placeholder="Select Date of Birth...">
+            </div>
+
+            <div class="input-group phone">
+                <img src="assets/svg/phone.svg" alt="phone">
+                <input type="number" id="phoneInput" placeholder="Phone: eg. 011 223 334">
+            </div>
+
+            <div class="input-group province">
+                <img src="assets/svg/location.svg" alt="location">
+                <input type="text" id="locationInput" placeholder="Place: eg. Phnom Penh">
+            </div>
+
+            <div class="input-group nationality">
+                <img src="assets/svg/flag.svg" alt="flag">
+                <input type="text" id="nationalityInput" placeholder="Nationality: eg. Cambodian">
+            </div>
+
+            <div class="buttons">
+                <button type="button" id="submitBtn">Submit</button>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>NO</th>
+                        <th>Khmer Name</th>
+                        <th>English Name</th>
+                        <th>Age</th>
+                        <th>Gender</th>
+                        <th>Email</th>
+                        <th>Date of Birth</th>
+                        <th>Phone Number</th>
+                        <th>Province</th>
+                        <th>Nationality</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </form>
+
+</body>
+<script src="src/main.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</html>
