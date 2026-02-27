@@ -19,21 +19,19 @@ function formData() {
 // Validation
 function Validation(data, isEdit = false) {
   // Duplicated Email and Phone
-  let isDuplicated = dataRecorded.some(
-    (existedRecord) => {
-      if (
-        isEdit &&
-        currentRow &&
-        existedRecord.Gmail === currentRow.cells[5].innerHTML
-      ) {
-        return false;
-      } 
-      return (
-        existedRecord.Gmail === data.Gmail ||
-        existedRecord.PhoneNumber == data.PhoneNumber
-      );
-    },
-  );
+  let isDuplicated = dataRecorded.some((existedRecord) => {
+    if (
+      isEdit &&
+      currentRow &&
+      existedRecord.Gmail === currentRow.cells[5].innerHTML
+    ) {
+      return false;
+    }
+    return (
+      existedRecord.Gmail === data.Gmail ||
+      existedRecord.PhoneNumber == data.PhoneNumber
+    );
+  });
   if (isDuplicated) {
     alert("This Email or Phone Number is Already Existed!");
     return false;
@@ -191,6 +189,7 @@ function UpdateStudent() {
     document.getElementById("submitBtn").addEventListener("click", AddStudent);
     currentRow = null;
   }
+  Swal.fire("Updated!", "The student has been updated.", "success");
 }
 
 // Updated Row NO
@@ -205,8 +204,34 @@ function UpdateIndexRow() {
 function DeleteStudent() {
   currentRow = event.target.closest("tr");
   if (currentRow) {
-    currentRow.remove();
-    UpdateIndexRow();
-    document.querySelector("form").reset();
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You are about to delete this student record!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33", // Red for delete
+      cancelButtonColor: "#3085d6", // Blue for cancel
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Get the unique Email from the row before deleting it
+        let emailToDelete = currentRow.cells[5].innerHTML;
+
+        // Find the index of this student in the dataRecorded array
+        let index = dataRecorded.findIndex(
+          (record) => record.Gmail === emailToDelete,
+        );
+
+        // Remove the student from the array if they exist
+        if (index !== -1) {
+          dataRecorded.splice(index, 1);
+        }
+
+        currentRow.remove();
+        UpdateIndexRow();
+        document.querySelector("form").reset();
+        Swal.fire("Deleted!", "The student has been removed.", "success");
+      }
+    });
   }
 }
