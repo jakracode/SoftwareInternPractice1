@@ -1,6 +1,38 @@
 let currentRow = null;
 document.getElementById("submitBtn").addEventListener("click", AddStudent);
 let dataRecorded = [];
+
+// Disable Number in Name, Address, Email, and Nationality Field
+document
+  .getElementById("englishNameInput")
+  .addEventListener("input", function () {
+    this.value = this.value.replace(/[^a-zA-Z\s]/g, "");
+  });
+document
+  .getElementById("khmerNameInput")
+  .addEventListener("input", function () {
+    this.value = this.value.replace(/[^\u1780-\u17FF\s]/g, "");
+  });
+document.getElementById("locationInput").addEventListener("input", function () {
+  this.value = this.value.replace(/[^a-zA-Z\s]/g, "");
+});
+document
+  .getElementById("nationalityInput")
+  .addEventListener("input", function () {
+    this.value = this.value.replace(/[^a-zA-Z\s]/g, "");
+  });
+document.getElementById("emailInput").addEventListener("input", function () {
+  this.value = this.value.replace(/[^a-z0-9.@\s]/g, "");
+});
+
+// Disable Text in Phone, and Age Field
+document.getElementById("phoneInput").addEventListener("input", function () {
+  this.value = this.value.replace(/[^0-9]/g, "");
+});
+document.getElementById("ageInput").addEventListener("input", function () {
+  this.value = this.value.replace(/[^0-9]/g, "");
+});
+
 // Storing Data
 function formData() {
   let data = {};
@@ -18,6 +50,25 @@ function formData() {
 
 // Validation
 function Validation(data, isEdit = false) {
+
+  // Length Validation
+  if( formData().KhmerName.trim().length < 2){
+    alert("Incorrect");
+    return;
+  }
+  if( formData().EnglishName.trim().length < 2){
+    alert("Incorrect");
+    return;
+  }
+  if( formData().Nationality.trim().length < 2){
+    alert("Incorrect");
+    return;
+  }
+  if( formData().Province.trim().length < 2){
+    alert("Incorrect");
+    return;
+  }
+
   // Duplicated Email and Phone
   let isDuplicated = dataRecorded.some((existedRecord) => {
     if (
@@ -33,14 +84,22 @@ function Validation(data, isEdit = false) {
     );
   });
   if (isDuplicated) {
-    alert("This Email or Phone Number is Already Existed!");
+    Swal.fire({
+      icon: "error",
+      title: "Oops...",
+      text: "This Email or Phone Number is Already Existed!",
+    });
     return false;
   }
 
   // Validation
-  let EmailPattern = /^[a-z0-9._%+-]+@gmail\.com$/;
+  let EmailPattern = /^[a-z0-9]+@gmail\.com$/;
   if (!EmailPattern.test(formData().Gmail)) {
-    alert("Please Enter a Valid Email Address.");
+    Swal.fire({
+      icon: "error",
+      title: "Oops...",
+      text: "Please Enter a Valid Email Address!",
+    });
     return false;
   }
 
@@ -51,21 +110,33 @@ function Validation(data, isEdit = false) {
     formData().Age < 15 ||
     formData().Age > 99
   ) {
-    alert("Please enter a valid age (15-99).");
+    Swal.fire({
+      icon: "error",
+      title: "Oops...",
+      text: "Please enter a valid age (15-99)!",
+    });
     return false;
   }
 
   // English Validation
   let EnglishPattern = /^[a-zA-Z\s]+$/;
   if (!EnglishPattern.test(formData().EnglishName)) {
-    alert("Number Denied in Name field!");
+    Swal.fire({
+      icon: "error",
+      title: "Oops...",
+      text: "Number Denied in Name Field!",
+    });
     return false;
   }
 
   // Khmer Validation
   let KhmerPattern = /^[\u1780-\u17FF\s]+$/;
   if (!KhmerPattern.test(formData().KhmerName)) {
-    alert("Invalid Khmer Script!");
+    Swal.fire({
+      icon: "error",
+      title: "Oops...",
+      text: "Invalid Khmer Script!",
+    });
     return false;
   }
 
@@ -77,19 +148,31 @@ function Validation(data, isEdit = false) {
 
   // Matching Age
   if (exactAge != parseInt(formData().Age)) {
-    alert("Your date of birth didn't match you age!");
+    Swal.fire({
+      icon: "error",
+      title: "Oops...",
+      text: "Your date of birth didn't match you age!",
+    });
     return false;
   }
 
   // Phone Validation
   if (!formData().PhoneNumber.startsWith("0")) {
-    alert("Phone number should start with 0.");
+    Swal.fire({
+      icon: "error",
+      title: "Oops...",
+      text: "Phone number should start with 0!",
+    });
     return false;
   }
 
   let PhonePattern = /^\d{9,10}$/;
   if (!PhonePattern.test(formData().PhoneNumber)) {
-    alert("Please enter a valid phone number (9-10 digits).");
+    Swal.fire({
+      icon: "error",
+      title: "Oops...",
+      text: "Please enter a valid phone number (9-10 digits)!",
+    });
     return false;
   }
 
@@ -124,6 +207,7 @@ function AddStudent() {
         </td>
     </tr>
     `;
+  Swal.fire("Updated!", "The student has been added.", "success");
   document.querySelector("tbody").innerHTML += row;
   document.querySelector("form").reset();
 }
@@ -209,8 +293,8 @@ function DeleteStudent() {
       text: "You are about to delete this student record!",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#d33", // Red for delete
-      cancelButtonColor: "#3085d6", // Blue for cancel
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
